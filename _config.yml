@@ -106,8 +106,8 @@ analytics:
 author:
   name             : "Roshan Gurung"
   avatar           : "/images/bio-photo.jpg"
-  bio              : "ML Engineer and Curious Learner"
-  location         : "Kathmandu, Nepal"
+  bio              : "Data Science, Machine Learning and MLOps"
+  location         : "Ontario, Canada"
   email            :
   links:
     - label: "GitHub"
