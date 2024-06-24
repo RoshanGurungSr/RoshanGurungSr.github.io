@@ -130,12 +130,11 @@ author:
 footer:
   links:
     - label: "Twitter"
-      icon: "fab fa-fw fa-twitter-square"
+      icon: "fab fa-brands fa-twitter-square"
       url: "https://twitter.com/RosanGrgSr"
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
       url: "https://https://github.com/RoshanGurungSr"
-
 
 # Reading Files
 include:
