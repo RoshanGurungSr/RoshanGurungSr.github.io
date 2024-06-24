@@ -12,8 +12,8 @@ var store = [{
         "teaser": null
       },{
         "title": "Linear Regression with OLS from scratch",
-        "excerpt":"Coming Soon…  ","categories": ["Machine Learning"],
+        "excerpt":"Linear Regression is a statistical model and a supervised learning algorithm used for predicting a continuous target variable based on one or more predictor variables. The target variable is the final output that we are trying to estimate and the predictor variables are the features of the data. The objective...","categories": ["Machine Learning"],
         "tags": [],
-        "url": "/machine%20learning/test/",
+        "url": "/machine%20learning/linear_regression/",
         "teaser": null
       }]
