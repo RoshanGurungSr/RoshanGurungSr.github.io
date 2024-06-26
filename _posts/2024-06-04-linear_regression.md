@@ -126,7 +126,7 @@ $$
 $$
 
 $$
-\sum_{i=1}^n = n\bar{y}
+\sum_{i=1}^ny_i = n\bar{y}
 $$
 
 Now, using above property,
