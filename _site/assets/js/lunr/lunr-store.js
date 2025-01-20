@@ -12,8 +12,14 @@ var store = [{
         "teaser": null
       },{
         "title": "Highly Scalable Embedding Search with AWS OpenSearch",
-        "excerpt":"Coming Soon…  ","categories": ["Machine Learning"],
+        "excerpt":"Coming Soon…  ","categories": ["Machine Learning","AWS"],
         "tags": [],
-        "url": "/machine%20learning/embedding_search/",
+        "url": "/machine%20learning/aws/embedding_search/",
+        "teaser": null
+      },{
+        "title": "Kickstart GenAI with Amazon Bedrock",
+        "excerpt":"Coming Soon…  ","categories": ["Generative AI","AWS"],
+        "tags": [],
+        "url": "/generative%20ai/aws/aws_bedrock/",
         "teaser": null
       }]
