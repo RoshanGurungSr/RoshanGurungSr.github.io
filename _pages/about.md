@@ -9,9 +9,13 @@ I am logging my experiences and knowledge about Machine Learning, Software Engin
 this personal blog.
 
 **About Me**<br>
-I am currently enrolled into MSc. Computer Science program at Lakehead University and I will be graduating in Fall 2024.
+I am working as Prompt Engineer and AI Automation doe Innodata Inc. 
 
-I have experience of almost 4 years in working as Machine Learning Engineer at [Fusemachines Inc.](https://fusemachines.com) from December 2019 to August 2023, where my reposnibility included working on Production ML System, Distributed Computing and Optimization.
+I am graduate  MSc. Computer Science program at Lakehead University in Canada. 
+
+I have experience of almost 4 years in working as Machine Learning Engineer at [Fusemachines Inc.](https://fusemachines.com) 
+from December 2019 to August 2023, where my reposnibility included working on developing Production grade ML Solutions, 
+System Design, Deployment, and Optimization.
 
 I have worked on Computer Vision Projects like Statistical Shape Modelling, Object Localization, Object Detection 
 and Semantic segmentation, Face recognition and Facial landmark localization. Besides these, I have worked on NLP 
