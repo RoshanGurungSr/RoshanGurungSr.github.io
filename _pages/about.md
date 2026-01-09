@@ -9,9 +9,9 @@ I am logging my experiences and knowledge about Machine Learning, Software Engin
 this personal blog.
 
 **About Me**<br>
-I am working as Prompt Engineer and AI Automation doe Innodata Inc. 
+I am working as AI & LLM Engineer at Pinterest on behalf of Innodata Inc. 
 
-I am graduate  MSc. Computer Science program at Lakehead University in Canada. 
+I am graduate of  MSc. Computer Science program at Lakehead University in Canada. 
 
 I have experience of almost 4 years in working as Machine Learning Engineer at [Fusemachines Inc.](https://fusemachines.com) 
 from December 2019 to August 2023, where my reposnibility included working on developing Production grade ML Solutions, 
