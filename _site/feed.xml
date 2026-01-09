@@ -1,4 +1,190 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.10.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2025-01-20T12:30:18+05:45</updated><id>http://localhost:4000/feed.xml</id><title type="html">Roshan Gurung</title><subtitle>A personal blog to share my learnings and experiences</subtitle><author><name>Roshan Gurung</name></author><entry><title type="html">Kickstart GenAI with Amazon Bedrock</title><link href="http://localhost:4000/generative%20ai/aws/aws_bedrock/" rel="alternate" type="text/html" title="Kickstart GenAI with Amazon Bedrock" /><published>2024-10-17T17:45:30+05:45</published><updated>2024-10-17T17:45:30+05:45</updated><id>http://localhost:4000/generative%20ai/aws/aws_bedrock</id><content type="html" xml:base="http://localhost:4000/generative%20ai/aws/aws_bedrock/"><![CDATA[<p>Coming Soon…</p>]]></content><author><name>Roshan Gurung</name></author><category term="Generative AI" /><category term="AWS" /><summary type="html"><![CDATA[Being Worked On. Please Be Patience and Wait.]]></summary></entry><entry><title type="html">Highly Scalable Embedding Search with AWS OpenSearch</title><link href="http://localhost:4000/machine%20learning/aws/embedding_search/" rel="alternate" type="text/html" title="Highly Scalable Embedding Search with AWS OpenSearch" /><published>2024-09-11T17:45:30+05:45</published><updated>2024-09-11T17:45:30+05:45</updated><id>http://localhost:4000/machine%20learning/aws/embedding_search</id><content type="html" xml:base="http://localhost:4000/machine%20learning/aws/embedding_search/"><![CDATA[<p>Coming Soon…</p>]]></content><author><name>Roshan Gurung</name></author><category term="Machine Learning" /><category term="AWS" /><summary type="html"><![CDATA[Being Worked On. Please Be Patience and Wait.]]></summary></entry><entry><title type="html">Linear Regression with OLS from scratch</title><link href="http://localhost:4000/machine%20learning/linear_regression/" rel="alternate" type="text/html" title="Linear Regression with OLS from scratch" /><published>2024-06-04T17:45:30+05:45</published><updated>2024-06-04T17:45:30+05:45</updated><id>http://localhost:4000/machine%20learning/linear_regression</id><content type="html" xml:base="http://localhost:4000/machine%20learning/linear_regression/"><![CDATA[<p>Linear Regression is a statistical model and a supervised learning algorithm used for predicting a continuous target variable based on one or more predictor variables. The target variable is the final output that we are trying to estimate and the predictor variables are the features of the data. The objective is to find a best-fitting line that minimizes the difference between predicted values, and actual values.</p>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.4.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2026-01-09T10:10:46+05:45</updated><id>http://localhost:4000/feed.xml</id><title type="html">Roshan Gurung</title><subtitle>A personal blog to share my learnings and experiences</subtitle><author><name>Roshan Gurung</name></author><entry><title type="html">Create your own ChatGPT using SageMaker Python SDK V3</title><link href="http://localhost:4000/generative%20ai/aws/aws_bedrock/" rel="alternate" type="text/html" title="Create your own ChatGPT using SageMaker Python SDK V3" /><published>2025-12-06T17:45:30+05:45</published><updated>2025-12-06T17:45:30+05:45</updated><id>http://localhost:4000/generative%20ai/aws/aws_bedrock</id><content type="html" xml:base="http://localhost:4000/generative%20ai/aws/aws_bedrock/"><![CDATA[<h2 id="introduction">Introduction</h2>
+<p>AWS SageMaker Python SDK V3 has introduced more streamlined and unified core classes for ML workflow by replacing previous framework specific classes. This new SDK has a unified “ModelTrainer” class for handling custom containers and data processing, “ModelBuilder” class for model deployment and inference setup.</p>
+
+<p>I didn’t find much resources to deploy custom model in AWS SageMaker using latest python SDK V3, so In this tutorial, I will deploy open source LLM (Qwen3-4B-Instruct-2507) to demonstrate:</p>
+<ol>
+  <li>New deployment process using “ModelBuilder”, including custom dependency and environment variables for deployment containers</li>
+  <li>Custom model loading and inference invocation pipeline inside the containers</li>
+  <li>Schema driven inference for request/response validation</li>
+</ol>
+
+<h2 id="prerequisites">Prerequisites</h2>
+<p>Setup your SageMaker studio by creating a domain in Amazon SageMaker AI, then launch a JupyterLab in the SageMaker studio. For this tutorial, minimum instance type for JupyterLab will be enough. However, I will use a GPU instance for deployment endpoint, so be cautious about the incurred costs and always <strong>CLEAN UP</strong> the resources if you are not using them.</p>
+
+<h2 id="dependencies-managements">Dependencies Managements</h2>
+<p>In order to use codes from this tutorial, a recent version of sagemaker and other dependencies is needed. In my case, even starting with the recent distribution of SageMaker in JupyterLab, I was getting older versions. So, I used the following commands in the Jupyter notebook to update my dependencies.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>%pip install --no-cache-dir -U sagemaker protobuf --quiet
+%pip uninstall -y sagemaker sagemaker-core sagemaker-train sagemaker-serve sagemaker-mlops --quiet
+%pip install --no-cache-dir sagemaker-core sagemaker-train sagemaker-serve sagemaker-mlops 'sagemaker&gt;=3' --quiet
+
+%pip uninstall -y tensorflow --quiet
+%pip install --no-cache-dir tensorflow --quiet
+</code></pre></div></div>
+<h2 id="import-libraries">Import Libraries</h2>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import json
+import uuid
+
+from sagemaker.serve.model_builder import ModelBuilder
+from sagemaker.serve.spec.inference_spec import InferenceSpec
+from sagemaker.serve.builder.schema_builder import SchemaBuilder
+from sagemaker.serve.utils.types import ModelServer
+from sagemaker.core.resources import EndpointConfig
+</code></pre></div></div>
+
+<h2 id="custom-inferencespec">Custom InferenceSpec</h2>
+<p>As compared to the previous version of SDK, InferenceSpec allows for customizing model loading and data processing for inference, inside the deployment containers. In the given script, I am inheriting the InferenceSpec into a class to override the load() and invoke() function to suit model loading and data processing pipeline for the “Qwen3-4B-Instruct-2507” model. Here, load() function is one time calling to initialize the tokenizer and the model while starting the deployment container. Then, each time the endpoint gets the requests, invoke() function is executed.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>class HuggingFaceInferenceSpec(InferenceSpec):
+    def __init__(self):
+        self.model_name = "Qwen/Qwen3-4B-Instruct-2507"
+
+    def get_model(self):
+        return self.model_name
+            
+    def load(self, model_dir: str):
+        import torch
+        from transformers import AutoModelForCausalLM, AutoTokenizer
+        tokenizer = AutoTokenizer.from_pretrained(model_dir)
+        model = AutoModelForCausalLM.from_pretrained(
+            model_dir,
+            torch_dtype=torch.float16,
+            device_map="auto"
+        )
+        model.eval()
+        
+        return {"model": model, "tokenizer": tokenizer}
+            
+    def invoke(self, input_object, model):
+        import torch
+        try:
+            tokenizer = model["tokenizer"]
+            hf_model = model["model"]
+    
+            if isinstance(input_object, dict) and "inputs" in input_object:
+                messages = input_object["inputs"]
+            else:
+                messages = [{"role": "user", "content": str(input_object)}]
+    
+            text = tokenizer.apply_chat_template(
+                messages,
+                tokenize=False,
+                add_generation_prompt=True,
+            )
+    
+            inputs = tokenizer(text, return_tensors="pt").to(hf_model.device)
+    
+            with torch.no_grad():
+                outputs = hf_model.generate(
+                    **inputs,
+                    max_new_tokens=512,
+                    do_sample=True,
+                    temperature=0.7,
+                )
+    
+            generated = outputs[0][inputs["input_ids"].shape[-1]:]
+            response = tokenizer.decode(generated, skip_special_tokens=True)
+    
+            return [{"response": response}]
+
+        except Exception as ex:
+            return [{"response": f"Error during invocation: {ex}"}]
+</code></pre></div></div>
+
+<h2 id="schema-builder">Schema Builder</h2>
+<p>I also implement SchemaBuilder to enforce schema aware inference so that our input/output is consistent and is validated.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sample_input = {"inputs": [{"role": "user", "content": "What is AWS Sagemaker?"}]}
+
+sample_output = [{"response": "Amazon SageMaker is a fully managed cloud-based platform provided by AWS "}]
+schema_builder = SchemaBuilder(sample_input, sample_output)
+
+print("Schema builder created successfully!")
+</code></pre></div></div>
+
+<h2 id="model-builder">Model Builder</h2>
+<p>The parameters are defined for the deployment for HuggingFace model ID, instance type for endpoint, model name and endpoint name for their tracking. Along with this, I am enforcing dependencies and installing them manually into the container as QWEN-3 models depend upon the latest transformer architecture. Similarly, I am using environment variables for transformers such as “HF_MODEL_ID” which downloads and uses the specific model from configured parameters.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Configuration Parameters
+MODEL_ID = "Qwen/Qwen3-4B-Instruct-2507"
+INSTANCE_TYPE = "ml.g4dn.xlarge"
+MODEL_NAME_PREFIX = "hf-v3-qwen3-4b"
+ENDPOINT_NAME_PREFIX = "hf-v3-qwen3-4b-endpoint"
+
+dependencies = {
+    "auto": False,
+    "custom": ["sagemaker&gt;=3.1.1",
+               "transformers&gt;=4.57.3", 
+               "accelerate",
+               "torch&gt;=2.6.0", 
+               "cloudpickle&gt;=2.2.1",
+               "protobuf"]
+}
+
+env_vars = {
+    "HF_MODEL_ID": MODEL_ID,
+    "HF_TASK": "text-generation",
+    "HF_HOME": "/opt/ml/model",
+    "TRANSFORMERS_CACHE": "/opt/ml/model",
+}
+
+# Generate unique identifiers
+unique_id = str(uuid.uuid4())[:8]
+model_name = f"{MODEL_NAME_PREFIX}-{unique_id}"
+endpoint_name = f"{ENDPOINT_NAME_PREFIX}-{unique_id}"
+</code></pre></div></div>
+
+<p>Having parameters, dependencies and environment variables configured, alongside initialized custom InferenceSpec, the next step is to build the model using “ModelBuilder”. Here, as I am using a transformer based model, I am using TORCHSERVER as model server for inference. This will create a model which is like a docker image and can be viewed in the “Models/My models” tab in SageMaker studio.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Create ModelBuilder
+inference_spec = HuggingFaceInferenceSpec()
+model_builder = ModelBuilder(
+    inference_spec=inference_spec,
+    model_server=ModelServer.TORCHSERVE,
+    schema_builder=schema_builder,
+    instance_type=INSTANCE_TYPE, 
+    env_vars=env_vars,
+    dependencies=dependencies
+)
+
+# Build the model
+core_model = model_builder.build(model_name=model_name)
+print(f"Model Successfully Created: {core_model.model_name}")
+</code></pre></div></div>
+
+<p><img src="/images/blog-images/sagemaker-v3-post/sagemakerv3_model_builder_output.png" alt="Model Creation Screenshot" /></p>
+
+<h2 id="model-deployment">Model Deployment</h2>
+<p>In this step, the previously built model will be deployed where containers will be created, InferenceSpec will be executed by pulling the model and loading them into the defined instance type. Then the endpoint will be created and will be live for making API requests.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>core_endpoint = model_builder.deploy(endpoint_name=endpoint_name)
+print(f"Endpoint Successfully Created: {core_endpoint.endpoint_name}")
+
+</code></pre></div></div>
+<p><img src="/images/blog-images/sagemaker-v3-post/sagemakerv3_model_deployment_output.png" alt="Model Deployment Screenshot" /></p>
+
+<h2 id="testing">Testing</h2>
+<p>Now, when the endpoint is live, you can invoke it and send the requests in the same schema format as defined in the previous step. It will trigger invoke() function and you will get your response from the LLM.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>test_input_1 = {"inputs": [{"role": "user", "content": "What are major features of AWS Sagemaker?"}]}
+
+result_1 = core_endpoint.invoke(
+    body=json.dumps(test_input_1),
+    content_type="application/json"
+)
+
+response_1 = json.loads(result_1.body.read().decode('utf-8'))
+print(f"Conversation Test: {response_1}")
+</code></pre></div></div>
+
+<p><img src="/images/blog-images/sagemaker-v3-post/sagemakerv3_final_test_output.png" alt="Endpoint Testing Screenshot" /></p>
+
+<h2 id="resource-cleanups">Resource Cleanups</h2>
+<p>After all the testing is complete and if you are no longer using the endpoint, always clean up the resources using the following script to avoid any further charges.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>core_endpoint_config = EndpointConfig.get(endpoint_config_name=core_endpoint.endpoint_name)
+
+core_model.delete()
+core_endpoint.delete()
+core_endpoint_config.delete()
+
+print("All resources successfully deleted!")
+</code></pre></div></div>]]></content><author><name>Roshan Gurung</name></author><category term="Generative AI" /><category term="AWS" /><summary type="html"><![CDATA[Tutorial on how to use AWS Sagemaker Python SDK V3 for deploying your own LLM]]></summary></entry><entry><title type="html">Highly Scalable Embedding Search with AWS OpenSearch</title><link href="http://localhost:4000/machine%20learning/embedding_search/" rel="alternate" type="text/html" title="Highly Scalable Embedding Search with AWS OpenSearch" /><published>2024-09-11T17:45:30+05:45</published><updated>2024-09-11T17:45:30+05:45</updated><id>http://localhost:4000/machine%20learning/embedding_search</id><content type="html" xml:base="http://localhost:4000/machine%20learning/embedding_search/"><![CDATA[<p>Coming Soon…</p>]]></content><author><name>Roshan Gurung</name></author><category term="Machine Learning" /><summary type="html"><![CDATA[Being Worked On. Please Be Patience and Wait.]]></summary></entry><entry><title type="html">Understanding working mechanism of Decision Tree (ID3 Variant)</title><link href="http://localhost:4000/machine%20learning/decision_tree/" rel="alternate" type="text/html" title="Understanding working mechanism of Decision Tree (ID3 Variant)" /><published>2024-06-04T17:45:30+05:45</published><updated>2024-06-04T17:45:30+05:45</updated><id>http://localhost:4000/machine%20learning/decision_tree</id><content type="html" xml:base="http://localhost:4000/machine%20learning/decision_tree/"><![CDATA[<p>Coming Soon…</p>]]></content><author><name>Roshan Gurung</name></author><category term="Machine Learning" /><summary type="html"><![CDATA[Being Worked On. Please Be Patience and Wait.]]></summary></entry><entry><title type="html">Linear Regression with OLS from scratch</title><link href="http://localhost:4000/machine%20learning/linear_regression/" rel="alternate" type="text/html" title="Linear Regression with OLS from scratch" /><published>2024-06-04T17:45:30+05:45</published><updated>2024-06-04T17:45:30+05:45</updated><id>http://localhost:4000/machine%20learning/linear_regression</id><content type="html" xml:base="http://localhost:4000/machine%20learning/linear_regression/"><![CDATA[<p>Linear Regression is a statistical model and a supervised learning algorithm used for predicting a continuous target variable based on one or more predictor variables. The target variable is the final output that we are trying to estimate and the predictor variables are the features of the data. The objective is to find a best-fitting line that minimizes the difference between predicted values, and actual values.</p>
 
 <p>Simple Linear Regression consists of a single predictor variable “x” and a response variable “y”. It is modeled by the linear equation:</p>
 
