@@ -15,3 +15,6 @@ codekit-config.json
 
 # Jeklyll files
 .jekyll-cache
+
+# Build FIles
+_site
