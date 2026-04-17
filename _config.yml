@@ -105,31 +105,28 @@ author:
   location         : "Ontario, Canada"
   email            :
   links:
-    - label: "GitHub"
-      icon: "fab fa-fw fa-github"
-      url: "https://https://github.com/RoshanGurungSr"
     - label: "Linkedin"
       icon: "fab fa-fw fa-linkedin"
       url: "https://www.linkedin.com/in/roshan-gurung-learning"
-    - label: "Twitter"
-      icon: "fab fa-fw fa-twitter-square"
-      url: "https://twitter.com/RosanGrgSr"
-#    - label: "Email"
-#      icon: "fas fa-fw fa-envelope-square"
-#       url: "roshan.gurung.sr@gmail.com"
-#    - label: "Website"
-#        icon: "fas fa-fw fa-link"
-#         url: "https://your-website.com"
+    - label: "GitHub"
+      icon: "fab fa-fw fa-github"
+      url: "https://https://github.com/RoshanGurungSr"
 
 # Site Footer
 footer:
   links:
-    - label: "Twitter"
-      icon: "fab fa-brands fa-twitter-square"
-      url: "https://twitter.com/RosanGrgSr"
+    - label: "Linkedin"
+      icon: "fab fa-fw fa-linkedin"
+      url: "https://www.linkedin.com/in/roshan-gurung-learning"
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
-      url: "https://https://github.com/RoshanGurungSr"
+      url: "https://medium.com/@roshan.gurung.sr"
+    - label: "Medium"
+      icon: "fab fa-fw fa-medium"
+      url: "https://medium.com/@roshan.gurung.sr"
+    - label: "Dev"
+      icon: "fab fa-fw fa-dev"
+      url: "https://dev.to/rgurung_sr"
 
 # Reading Files
 include:
